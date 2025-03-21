@@ -21,6 +21,11 @@ def select_model(args, device):
         name = f"{model_id:02}_DAT_baseline"
         model_path = os.path.join('model_zoo', 'team00_dat.pth')
         model_func = DAT
+    elif model_id == 14:
+        from models.team14_SwinSTASR import main as SwinSTASR
+        name = f"{model_id:02}_SwinSTASR"
+        model_path = os.path.join('model_zoo', 'team14_SwinSTASR.pth')
+        model_func = SwinSTASR
     else:
         raise NotImplementedError(f"Model {model_id} is not implemented.")
 
