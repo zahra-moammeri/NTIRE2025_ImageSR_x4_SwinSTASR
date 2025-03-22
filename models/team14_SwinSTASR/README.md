@@ -70,7 +70,7 @@ python swinfir/train.py -opt options/train/SwinFIR/train_SwinFIR_SRx4_from_scrat
 **SWinSTASR Results (X4):**
 |  Dataset   |   PSNR    |    SSIM    |   LPIPS  |
 |     :--    |     :-:   |      :-:   |     :-:  |
-|    Set5    |  23.7260  |   0.9013   |  0.1726  |
+|    Set5    |  32.7260  |   0.9013   |  0.1726  |
 |    Set14   |  29.0286  |   0.7924   |  0.2741  |
 |  DIV2K_valid  |  31.0018  |   0.8501   |  0.2425  |
 
