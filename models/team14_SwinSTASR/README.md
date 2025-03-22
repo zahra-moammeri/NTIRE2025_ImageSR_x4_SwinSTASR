@@ -4,10 +4,18 @@
 
 2. Install the necessary dependencies by following the instructions in our repository.
 
+
 ```python
 pip install -r requirements.txt
 python setup.py develop
 ```
+
+```python
+git clone https://github.com/fbcotter/pytorch_wavelets
+cd pytorch_wavelets
+pip install .
+```
+<hr/>
 
 ## To Inference
 ```python
