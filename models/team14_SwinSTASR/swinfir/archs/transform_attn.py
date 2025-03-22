@@ -20,22 +20,7 @@ class ResBlock(nn.Module):
     def __call__(self, x):
         out = self.body(x)
         return out + x
-    
 
-class LKA(nn.Module):
-    def __init__(self, embed_dim):
-        super(LKA, self).__init__()
-        
-        self.body = nn.Sequential(
-            nn.Conv2d(embed_dim, embed_dim, 3, 1, 1, groups=embed_dim), 
-            nn.Conv2d(embed_dim, embed_dim, 3, 1, 2, dilation=2, groups= embed_dim),
-            nn.Conv2d(embed_dim, embed_dim, 1, 1, 0)
-        )
-
-    def __call__(self, x):
-        out = self.body(x)
-        return out * x
-       
 
 ## Channel Attention (CA) Layer
 class CALayer(nn.Module):

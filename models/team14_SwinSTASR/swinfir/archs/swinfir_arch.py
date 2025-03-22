@@ -7,10 +7,7 @@ from basicsr.archs.arch_util import to_2tuple, trunc_normal_
 from swinfir.archs.swinfir_utils import WindowAttention, DropPath, Mlp, SFB
 from swinfir.archs.swinfir_utils import PatchEmbed, PatchUnEmbed, Upsample
 from swinfir.archs.swinfir_utils import window_partition, window_reverse
-# from swinfir.archs.WaveletAttention import WaveletAttention
-# from swinfir.archs.WaveAttention import WaveletAttention
 from swinfir.archs.transform_attn import AttentionBlock
-# from swinfir.archs.waveattn_gap import WaveletGap
 
 
 class SwinTransformerBlock(nn.Module):
