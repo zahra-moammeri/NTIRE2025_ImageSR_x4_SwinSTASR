@@ -4,10 +4,18 @@
 
 2. Install the necessary dependencies by following the instructions in our repository.
 
+
 ```python
 pip install -r requirements.txt
 python setup.py develop
 ```
+
+```python
+git clone https://github.com/fbcotter/pytorch_wavelets
+cd pytorch_wavelets
+pip install .
+```
+<hr/>
 
 ## To Inference
 ```python
@@ -62,7 +70,7 @@ python swinfir/train.py -opt options/train/SwinFIR/train_SwinFIR_SRx4_from_scrat
 **SWinSTASR Results (X4):**
 |  Dataset   |   PSNR    |    SSIM    |   LPIPS  |
 |     :--    |     :-:   |      :-:   |     :-:  |
-|    Set5    |  -------  |   ------   |  ------  |
-|    Set14   |  -------  |   ------   |  ------  |
-|  DIV2K-LSDIR valid  |  31.0018  |   0.8501   |  0.2425  |
-|   BSD100   |  -------  |   ------   |  ------  |
+|    Set5    |  32.7260  |   0.9013   |  0.1726  |
+|    Set14   |  29.0286  |   0.7924   |  0.2741  |
+|  DIV2K_valid  |  31.0018  |   0.8501   |  0.2425  |
+
