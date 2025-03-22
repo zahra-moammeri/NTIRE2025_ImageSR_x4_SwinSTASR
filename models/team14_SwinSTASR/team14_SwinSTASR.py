@@ -2,9 +2,8 @@ import os
 import torch
 import numpy as np
 from PIL import Image
-from basicsr.utils import imwrite
-from swinfir.archs import SwinFIR
-from swinfir.utils import load_model
+from .swinfir.archs.swinfir_arch import SwinFIR
+
 
 def load_image(path):
     """Load and preprocess an image for SwinFIR."""
