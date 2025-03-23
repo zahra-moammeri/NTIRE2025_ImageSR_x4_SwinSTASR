@@ -16,35 +16,24 @@ def load_image(path):
     img = torch.from_numpy(img).permute(2, 0, 1).unsqueeze(0)  # CHW-RGB -> BCHW-RGB
     return img
 
-def main(model_dir, input_path, output_path, device):
-    # 1. Configure model programmatically to match original YAML settings
-    opt = {
-        'name': 'SwinFIR_SRx4',
-        'model': 'SwinFIR',
-        'scale': 4,
-        'dataroot_lq': input_path,
-        'results_dir': output_path,
-        'path': {
-            'pretrain_model': model_dir
-        },
-        'device': device,
-        'network_g': {
-            'type': 'SwinFIR',
-            'upscale': 4,
-            'in_chans': 3,
-            'img_size': 60,
-            'window_size': 12,
-            'img_range': 1.0,
-            'depths': [6, 6, 6, 6, 6, 6],
-            'embed_dim': 180,
-            'num_heads': [6, 6, 6, 6, 6, 6],
-            'mlp_ratio': 2,
-            'upsampler': 'pixelshuffle',
-            'resi_connection': 'transformattention'
-        }
-    }
+def save_image(tensor, path):
+    """Save a tensor as an image."""
+    tensor = tensor.squeeze().float().cpu().clamp_(0, 1).numpy()
+    tensor = np.transpose(tensor[[2, 1, 0], :, :], (1, 2, 0))  # RGB->BGR for OpenCV
+    tensor = (tensor * 255.0).round().astype(np.uint8)
+    Image.fromarray(tensor).save(path)
 
-    # 2. Initialize model with original architecture config
+def main(model_dir, input_path, output_path, device):
+     """
+    Main function for SwinSTASR inference.
+    Args:
+        model_dir: Path to the pretrained model.
+        input_path: Folder containing input images.
+        output_path: Folder to save restored images.
+        device: Computation device ('cuda' or 'cpu').
+    """
+
+    # Initialize model with original architecture config
     model = SwinFIR(
         img_size=60,
         patch_size=1,
@@ -59,19 +48,19 @@ def main(model_dir, input_path, output_path, device):
         upsampler='pixelshuffle',
         resi_connection='transformattention'
     )
-    model = model.to(device)
-    load_model(model, opt['path']['pretrain_model'], strict=True)
-    model.eval()
 
-    # 3. Process images matching original workflow
+    model.load_state_dict(torch.load(model_dir, map_location=device), strict=True)
+    model.eval()
+    model.to(device)    
+
+    # Process images matching original workflow
     os.makedirs(output_path, exist_ok=True)
-    img_list = sorted([f for f in os.listdir(input_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
-    
-    with torch.no_grad():
-        for img_name in img_list:
+    # Process each image in the input folder
+    for img_name in os.listdir(input_path):
+        if img_name.lower().endswith(('.png', '.jpg', '.jpeg')):
             img_path = os.path.join(input_path, img_name)
             
-            # Load and prepare image
+            # Load and preprocess the image
             lq = load_image(img_path).to(device)
             
             # Pad input image to be a multiple of window_size
@@ -82,18 +71,14 @@ def main(model_dir, input_path, output_path, device):
             lq = torch.cat([lq, torch.flip(lq, [2])], 2)[:, :, :h + mod_pad_h, :]
             lq = torch.cat([lq, torch.flip(lq, [3])], 3)[:, :, :, :w + mod_pad_w]
             
-            # Inference
-            output = model(lq)
-            output = output[..., :h * 4, :w * 4]  # Remove padding
+            # Perform inference
+            with torch.no_grad():
+                output = model(lq)
             
-            # Post-process and save
-            output = output.squeeze().float().cpu().clamp_(0, 1).numpy()
-            output = np.transpose(output[[2, 1, 0], :, :])  # RGB->BGR for OpenCV
-            output = (output * 255.0).round().astype(np.uint8)
+            # Remove padding
+            output = output[..., :h * 4, :w * 4]
             
-            # Save with original filename
-            basename = os.path.splitext(img_name)[0]
-            save_path = os.path.join(output_path, f"{basename}.png")
-            imwrite(output, save_path)
+            # Save the output image
+            save_image(output, os.path.join(output_path, img_name))
 
     print(f"Results saved to {output_path}")
