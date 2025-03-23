@@ -3,6 +3,10 @@ import torch
 import numpy as np
 from PIL import Image
 from .swinfir.archs.swinfir_arch import SwinFIR
+from .swinfir.archs.transform_attn import ResBlock, CALayer, FourierTransform
+from .swinfir.archs.transform_attn import TransformAttention, AttentionBlock
+from .swinfir.archs.swinfir_utils import *
+from .swinfir.archs.local_arch import *
 
 
 def load_image(path):
